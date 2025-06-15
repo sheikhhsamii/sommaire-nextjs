@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Source_Sans_3 as FontSans } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-
+import { Toaster } from "react-hot-toast";
 const fontSans = FontSans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,6 +23,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${fontSans.variable} antialiased`}>{children}</body>
       </html>
+      <Toaster position="bottom-right" />
     </ClerkProvider>
   );
 }

@@ -13,16 +13,35 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useUploadThing } from "@/utils/uploadthing";
+import toast from "react-hot-toast";
 
 const FileUpload = () => {
   const form = useForm<UploadFileType>({
     resolver: zodResolver(UploadFileSchema),
   });
-
+  const { startUpload } = useUploadThing("pdfUploader", {
+    onClientUploadComplete: () => {
+      toast.dismiss();
+      toast.success("Uploaded successfully!🎉");
+    },
+    onUploadError: (error) => {
+      toast.dismiss();
+      toast.error(error?.message || "Error uploading file❌");
+    },
+    onUploadBegin: () => {
+      toast.loading("Processing your file...🗃️");
+    },
+  });
   const onSubmit = async (values: UploadFileType) => {
-    // Handle file upload here
-    console.log(values);
-    //Upload the file to uploadthing
+    const file = values?.file as File;
+    console.log(file, "file");
+    //Start Upload
+    const res = await startUpload([file]);
+    if (!res) {
+      toast.error("Error uploading file❌");
+      return;
+    } 
     //parse the pdf using langchain
     //Summarize the pdf using AI
     //Save the Summary to the Database
@@ -60,7 +79,12 @@ const FileUpload = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Upload your PDF</Button>
+          <Button
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            type="submit"
+          >
+            {form.formState.isSubmitting ? "Uploading..." : "Upload your PDF"}
+          </Button>
         </form>
       </Form>
     </section>
