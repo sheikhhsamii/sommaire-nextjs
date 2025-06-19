@@ -9,12 +9,9 @@ interface LayoutProps {
 
 const AuthLayout = ({ children }: LayoutProps) => {
   const { isLoaded, userId } = useAuth();
-  console.log(userId, "userId")
-
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
-
   if (!userId) {
     return <RedirectToSignIn />;
   }

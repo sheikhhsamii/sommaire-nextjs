@@ -9,7 +9,7 @@ export const ourFileRouter = {
     .middleware(async () => {
       try {
         const { userId } = await auth();
-        
+
         if (!userId) {
           throw new UploadThingError("Unauthorized - No user found");
         }
@@ -23,7 +23,7 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload completed for userId:", metadata.userId);
       console.log("File URL:", file.url);
-      return { userId: metadata.userId, fileUrl: file.url };
+      return { userId: metadata.userId, file };
     }),
 } satisfies FileRouter;
 

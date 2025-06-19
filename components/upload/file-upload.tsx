@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useUploadThing } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
+import { generatePdfSummary } from "@/actions/upload-actions";
 
 const FileUpload = () => {
   const form = useForm<UploadFileType>({
@@ -41,8 +42,15 @@ const FileUpload = () => {
     if (!res) {
       toast.error("Error uploading file❌");
       return;
-    } 
+    }
     //parse the pdf using langchain
+    const summary = await generatePdfSummary(res[0]);
+    console.log({ summary }, "summary");
+    if (!summary || summary.data === null) {
+      toast.error("Error generating summary❌");
+      return;
+    }
+
     //Summarize the pdf using AI
     //Save the Summary to the Database
     //Redirect to the [id] Summary Page
